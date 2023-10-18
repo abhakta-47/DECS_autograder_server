@@ -1,3 +1,6 @@
+#Plot code
+
+
 import matplotlib.pyplot as plt
 
 num_clients = []
