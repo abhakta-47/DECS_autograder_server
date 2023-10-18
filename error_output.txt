@@ -1,0 +1,58 @@
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: Permission denied
+sh: 1: ./c_code_server: Permission deniedsh: 1: ./c_code_server: Permission denied
+
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: Permission denied
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: Text file busy
+rver: not found
+sh: 1: ./c_code_server: not found
+sh: 1: ./c_code_server: not found
+sh: 1: ./c_code_server: not found
+sh: 1: ./c_code_server: not found
+sh: 1: ./c_code_server: not found
+sh: 1: ./c_code_server: not found
+sh: 1: ./c_c
+COMPILATION ERROR :
+ /usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/Scrt1.o: in function `_start':
+(.text+0x1b): undefined reference to `main'
+collect2: error: ld returned 1 exit status
+busy
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: not found
+le busy
+/c_code_server: Text file busy
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: Text file busy
+sh: 1: ./c_code_server: not found
+sh: 1: ./c_code_server: not foundsh: 1: ./c_code_server: not found
+
+sh: 1: ./c_code_server: not found
+sh: 1: ./c_code_server: not found
+sh: 1: ./c_code_server: not found
+sh: 1: ./c_code_server: not found
+sh: 1: ./c_code_server: not found
+sh: 1: ./c_code_server: not found
+sh: 1: ./c_code_server: not found
+sh: 1: ./c_code_server: not found
+sh: 1: ./c_code_server: not found
+sh: 1: ./c_code_server: not found
+sh: 1: ./c_code_server: not found
+sh: 1: ./c_code_server: not found
+sh: 1: ./c_c

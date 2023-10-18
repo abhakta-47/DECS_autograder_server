@@ -1,0 +1,7 @@
+ERROR reading from socketThroughput is: 27.2491629
+Average response time in Sec: 0.0366984
+Successful Request Rate in res/Sec: 27.2491629
+Total Response Time in Sec: 0.2935870
+Timeout Rate in res/Sec: 0.0000000
+Error Rate in res/Sec: 3.4061454
+Request Sent Rate in res/microSec: 17.0307268
