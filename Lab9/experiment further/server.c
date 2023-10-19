@@ -202,7 +202,6 @@ int main(int argc, char *argv[]) {
   for (int i = 0; i < MAX_THREADS; i++) {
         pthread_join(thread_pool[i], NULL);
     }
-
   close(listenSocket);
 
   return 0;
