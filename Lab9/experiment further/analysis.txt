@@ -1,0 +1,5 @@
+Average_Resp_Time, Throughput, Successful_response, Error_Rate, Request_Sent_Rate, Average_CPU, Average_Threads
+.041088,182.2364810,182.2364810,4.9384423,96.0566832,12,1
+Time:,throughput:,Rate:,Rate:,Rate:,19,1
+.047705,199.6719362,199.6719362,1.0121980,100.8481659,30,1
+Time:,throughput:,Rate:,Rate:,Rate:,27,1

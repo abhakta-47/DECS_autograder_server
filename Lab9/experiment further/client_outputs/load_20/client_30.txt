@@ -1,0 +1,7 @@
+timeout detectedThroughput is: 0.9032850
+Average response time in Sec: 1.1070703
+Successful Request Rate in res/Sec: 0.9032850
+Total Response Time in Sec: 3.3212110
+Timeout Rate in res/Sec: 0.3010950
+Error Rate in res/Sec: 0.0000000
+Request Sent Rate in res/microSec: 0.6021900
