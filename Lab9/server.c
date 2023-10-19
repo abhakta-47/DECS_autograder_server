@@ -20,7 +20,7 @@ void *handle_client(void *arg) {
   int clientSocket = *((int *)arg);
   char buffer[1024];
   int n;
-
+  free(arg);
   bzero(buffer, 1024);
   int fileDescriptor = open("c_code_server.c", O_WRONLY | O_TRUNC | O_CREAT, 0666);
   n = read(clientSocket, buffer, 1024);
