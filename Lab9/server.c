@@ -9,6 +9,15 @@
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <pthread.h> // Include the pthread library
+#include "myqueue.h"
+
+#define MAX_THREADS 20 // Maximum number of threads in the pool
+
+pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t queue_cond = PTHREAD_COND_INITIALIZER;
+int pool_size;
+
+
 
 void error(char *msg) {
   perror(msg);
@@ -17,111 +26,132 @@ void error(char *msg) {
 
 // Function to handle each client request in a separate thread
 void *handle_client(void *arg) {
-  int clientSocket = *((int *)arg);
-  char buffer[1024];
-  int n;
-  free(arg);
-  bzero(buffer, 1024);
-  int fileDescriptor = open("c_code_server.c", O_WRONLY | O_TRUNC | O_CREAT, 0666);
-  n = read(clientSocket, buffer, 1024);
+  int *clientSocket;
+  while (1) 
+  {
+        pthread_mutex_lock(&queue_mutex);
+        while (pool_size == 0) {
+            pthread_cond_wait(&queue_cond, &queue_mutex);
+        }
+        clientSocket = dequeue();
+        pool_size--;
+        pthread_mutex_unlock(&queue_mutex);
 
-  write(fileDescriptor, buffer, n);
-  close(fileDescriptor);
+        if (clientSocket) 
+        {
+          char buffer[1024];
+              int n;
 
-  int stderrFileDescriptor = open("error_output.txt", O_WRONLY | O_CREAT, 0666);
-  if (stderrFileDescriptor < 0)
-    error("ERROR opening error_output.txt");
+              bzero(buffer, 1024);
+              int fileDescriptor = open("c_code_server.c", O_WRONLY | O_TRUNC | O_CREAT, 0666);
+              n = read(clientSocket, buffer, 1024);
 
-  // Redirect stderr to the file
-  if (dup2(stderrFileDescriptor, STDERR_FILENO) == -1)
-    error("ERROR redirecting stderr");
+              write(fileDescriptor, buffer, n);
+              close(fileDescriptor);
 
-  // Close the original stderr file descriptor
-  close(stderrFileDescriptor);
+              int stderrFileDescriptor = open("error_output.txt", O_WRONLY | O_CREAT, 0666);
+              if (stderrFileDescriptor < 0)
+                error("ERROR opening error_output.txt");
 
-  if (n < 0)
-    error("ERROR reading from socket");
+              // Redirect stderr to the file
+              if (dup2(stderrFileDescriptor, STDERR_FILENO) == -1)
+                error("ERROR redirecting stderr");
 
-  const char *compileCommand = "/usr/bin/gcc c_code_server.c -o c_code_server";
-  int compileStatus = system(compileCommand);
-  if (compileStatus == 0) { // If there are no compiler errors
-    const char *runCommand = "./c_code_server > out_gen.txt";
-    int runStatus = system(runCommand);
+              // Close the original stderr file descriptor
+              close(stderrFileDescriptor);
 
-    if (runStatus != 0) { // If there are no runtime errors
-      const char *diffCommand = "/usr/bin/diff expected_output.txt out_gen.txt > diff_out.txt";
-      int diffStatus = system(diffCommand);
+              if (n < 0)
+                error("ERROR reading from socket");
 
-      //printf("done\n");
-      fflush(stdout); // Flush the output buffer
+              const char *compileCommand = "/usr/bin/gcc c_code_server.c -o c_code_server";
+              int compileStatus = system(compileCommand);
+              if (compileStatus == 0) { // If there are no compiler errors
+                const char *runCommand = "./c_code_server > out_gen.txt";
+                int runStatus = system(runCommand);
 
-      if (diffStatus == 0) {
-        // If both files are the same according to diff, it returns 0
-        int outFileDescriptor = open("out_gen.txt", O_RDWR);
-        char outBuffer[1024];
-        int outBytesRead = read(outFileDescriptor, outBuffer, 1024);
-        lseek(fileDescriptor, 0, SEEK_SET);
-        ftruncate(fileDescriptor, 0);
-        write(outFileDescriptor, "\nPASS : ", strlen("\nPASS : "));
-        write(outFileDescriptor, outBuffer, outBytesRead);
-        close(outFileDescriptor);
-        outFileDescriptor = open("out_gen.txt", O_RDONLY);
-        outBytesRead = read(outFileDescriptor, outBuffer, 1024);
-        write(clientSocket, outBuffer, outBytesRead);
-        close(outFileDescriptor);
-      } else {
-        // OUTPUT ERROR i.e., diff returns a non-zero value
-        int diffFileDescriptor = open("diff_out.txt", O_RDWR);
-        char outBuffer[1024];
-        int outBytesRead = read(diffFileDescriptor, outBuffer, 1024);
-        lseek(fileDescriptor, 0, SEEK_SET);
-        ftruncate(fileDescriptor, 0);
-        write(diffFileDescriptor, "\nOUTPUT ERROR :\n", strlen("\nOUTPUT ERROR :\n"));
-        write(diffFileDescriptor, outBuffer, outBytesRead);
-        close(diffFileDescriptor);
-        diffFileDescriptor = open("diff_out.txt", O_RDONLY);
-        outBytesRead = read(diffFileDescriptor, outBuffer, 1024);
-        write(clientSocket, outBuffer, outBytesRead);
-        close(diffFileDescriptor);
-      }
-    } else { // If there's a runtime error
-      int errorFileDescriptor = open("error_output.txt", O_RDWR);
-      char outBuffer[1024];
-      int outBytesRead = read(errorFileDescriptor, outBuffer, 1024);
-      lseek(fileDescriptor, 0, SEEK_SET);
-      ftruncate(fileDescriptor, 0);
-      write(errorFileDescriptor, "\nRUNTIME ERROR :\n ", strlen("\nRUNTIME ERROR :\n "));
-      write(errorFileDescriptor, outBuffer, outBytesRead);
-      close(errorFileDescriptor);
-      errorFileDescriptor = open("error_output.txt", O_RDONLY);
-      outBytesRead = read(errorFileDescriptor, outBuffer, 1024);
-      write(clientSocket, outBuffer, outBytesRead);
-      close(errorFileDescriptor);
-    }
-  } else { // If there's a compilation error
-    int errorFileDescriptor = open("error_output.txt", O_RDWR);
-    char outBuffer[1024];
-    int outBytesRead = read(errorFileDescriptor, outBuffer, 1024);
-    lseek(fileDescriptor, 0, SEEK_SET);
-    ftruncate(fileDescriptor, 0);
-    write(errorFileDescriptor, "\nCOMPILATION ERROR :\n ", strlen("\nCOMPILATION ERROR :\n "));
-    write(errorFileDescriptor, outBuffer, outBytesRead);
-    close(errorFileDescriptor);
-    errorFileDescriptor = open("error_output.txt", O_RDONLY);
-    outBytesRead = read(errorFileDescriptor, outBuffer, 1024);
-    write(clientSocket, outBuffer, outBytesRead);
-    close(errorFileDescriptor);
+                if (runStatus != 0) { // If there are no runtime errors
+                  const char *diffCommand = "/usr/bin/diff expected_output.txt out_gen.txt > diff_out.txt";
+                  int diffStatus = system(diffCommand);
+
+                  //printf("done\n");
+                  fflush(stdout); // Flush the output buffer
+
+                  if (diffStatus == 0) {
+                    // If both files are the same according to diff, it returns 0
+                    int outFileDescriptor = open("out_gen.txt", O_RDWR);
+                    char outBuffer[1024];
+                    int outBytesRead = read(outFileDescriptor, outBuffer, 1024);
+                    lseek(fileDescriptor, 0, SEEK_SET);
+                    ftruncate(fileDescriptor, 0);
+                    write(outFileDescriptor, "\nPASS : ", strlen("\nPASS : "));
+                    write(outFileDescriptor, outBuffer, outBytesRead);
+                    close(outFileDescriptor);
+                    outFileDescriptor = open("out_gen.txt", O_RDONLY);
+                    outBytesRead = read(outFileDescriptor, outBuffer, 1024);
+                    write(clientSocket, outBuffer, outBytesRead);
+                    close(outFileDescriptor);
+                  } else {
+                    // OUTPUT ERROR i.e., diff returns a non-zero value
+                    int diffFileDescriptor = open("diff_out.txt", O_RDWR);
+                    char outBuffer[1024];
+                    int outBytesRead = read(diffFileDescriptor, outBuffer, 1024);
+                    lseek(fileDescriptor, 0, SEEK_SET);
+                    ftruncate(fileDescriptor, 0);
+                    write(diffFileDescriptor, "\nOUTPUT ERROR :\n", strlen("\nOUTPUT ERROR :\n"));
+                    write(diffFileDescriptor, outBuffer, outBytesRead);
+                    close(diffFileDescriptor);
+                    diffFileDescriptor = open("diff_out.txt", O_RDONLY);
+                    outBytesRead = read(diffFileDescriptor, outBuffer, 1024);
+                    write(clientSocket, outBuffer, outBytesRead);
+                    close(diffFileDescriptor);
+                  }
+                } else { // If there's a runtime error
+                  int errorFileDescriptor = open("error_output.txt", O_RDWR);
+                  char outBuffer[1024];
+                  int outBytesRead = read(errorFileDescriptor, outBuffer, 1024);
+                  lseek(fileDescriptor, 0, SEEK_SET);
+                  ftruncate(fileDescriptor, 0);
+                  write(errorFileDescriptor, "\nRUNTIME ERROR :\n ", strlen("\nRUNTIME ERROR :\n "));
+                  write(errorFileDescriptor, outBuffer, outBytesRead);
+                  close(errorFileDescriptor);
+                  errorFileDescriptor = open("error_output.txt", O_RDONLY);
+                  outBytesRead = read(errorFileDescriptor, outBuffer, 1024);
+                  write(clientSocket, outBuffer, outBytesRead);
+                  close(errorFileDescriptor);
+                }
+              } else { // If there's a compilation error
+                int errorFileDescriptor = open("error_output.txt", O_RDWR);
+                char outBuffer[1024];
+                int outBytesRead = read(errorFileDescriptor, outBuffer, 1024);
+                lseek(fileDescriptor, 0, SEEK_SET);
+                ftruncate(fileDescriptor, 0);
+                write(errorFileDescriptor, "\nCOMPILATION ERROR :\n ", strlen("\nCOMPILATION ERROR :\n "));
+                write(errorFileDescriptor, outBuffer, outBytesRead);
+                close(errorFileDescriptor);
+                errorFileDescriptor = open("error_output.txt", O_RDONLY);
+                outBytesRead = read(errorFileDescriptor, outBuffer, 1024);
+                write(clientSocket, outBuffer, outBytesRead);
+                close(errorFileDescriptor);
+              }
+                      
+                close(*clientSocket);
+                free(clientSocket);
+        }
   }
 
-  close(clientSocket);
-  pthread_exit(NULL);
 }
 
 int main(int argc, char *argv[]) {
   int listenSocket, portNumber;
   socklen_t clientAddressLength;
   struct sockaddr_in serverAddress, clientAddress;
-  pthread_t thread_id; // Thread ID for creating worker threads
+  //pthread_t thread_id; // Thread ID for creating worker threads
+
+  pthread_t thread_pool[MAX_THREADS];
+    for (int i = 0; i < MAX_THREADS; i++) {
+        pthread_create(&thread_pool[i], NULL, handle_client, NULL);
+    }
+
 
   if (argc < 2) {
     fprintf(stderr, "ERROR, no port provided\n");
@@ -143,7 +173,7 @@ int main(int argc, char *argv[]) {
   if (bind(listenSocket, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) < 0)
     error("ERROR on binding");
 
-  listen(listenSocket, 2);
+  listen(listenSocket, 30);
 
   clientAddressLength = sizeof(clientAddress);
 
@@ -154,18 +184,26 @@ int main(int argc, char *argv[]) {
     if (*newSocket < 0)
       error("ERROR on accept");
 
-    // Create a new thread to handle the client request
-    if (pthread_create(&thread_id, NULL, handle_client, (void *)newSocket) != 0) {
-      perror("pthread_create");
-      exit(1);
-    }
 
+    pthread_mutex_lock(&queue_mutex);
+    enqueue(newSocket);
+    pool_size++;
+    pthread_cond_signal(&queue_cond);
+    pthread_mutex_unlock(&queue_mutex);
+    // Create a new thread to handle the client request
+    // if (pthread_create(&thread_id, NULL, handle_client, (void *)newSocket) != 0) {
+    //   perror("pthread_create");
+    //   exit(1);
+    // }
+
+    for (int i = 0; i < MAX_THREADS; i++) {
+        pthread_join(thread_pool[i], NULL);
+    }
     // Detach the thread to avoid memory leaks
-    pthread_detach(thread_id);
+    //pthread_detach(thread_id);
   }
 
   close(listenSocket);
 
   return 0;
 }
-
