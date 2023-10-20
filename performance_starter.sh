@@ -16,9 +16,11 @@ analysis_file="analysis.txt"
 cpu_file="cpu_utilization.txt"
 threads_file="active_threads.txt"
 
+export output_file="util/"
+rm -rf "$output_file"
 
 # Clear the analysis file if it already exists or create a new one
-echo "Average_Resp_Time, Throughput, Successful_response, Error_Rate, Request_Sent_Rate, Average_CPU, Average_Threads" > "$analysis_file"
+echo "Load(M),Average_Resp_Time,Throughput,Successful_response,Error_Rate,Request_Sent_Rate,Average_CPU,Average_Threads" > "$analysis_file"
 
 # Run the performance test for a range of initial clients (e.g., from 1 to 20)
 for ((i = 1; i <= 20; i++)); do
@@ -54,12 +56,12 @@ for ((i = 1; i <= 20; i++)); do
 
     #Average_CPU=$(awk 'NR > 3 {sum += $13} END {print sum / (NR-3)}' "$cpu_file")
     #Average_Threads=$(awk 'END {print NR-1}' "$threads_file") 
-    cpu_average=$(awk -F', ' 'NR>1 {sum+=$2} END {print sum/(NR-1)}' "util/util.log")
-    nlwp_average=$(awk -F', ' 'NR>1 {sum+=$3} END {print sum/(NR-1)}' "util/util.log")
+    cpu_average=$(awk -F', ' '{sum+=$2} END {print sum/(NR)}' "util/util.log")
+    nlwp_average=$(awk -F', ' '{sum+=$3} END {print sum/(NR)}' "util/util.log")
 
     # Append the metrics to the analysis file
     #echo "$Average_Response_Time,$Throughput_Rate,$Successful_Request_Rate,$Error_Rate,$Request_Sent_Rate,$Average_CPU,$Average_Threads" >> "$analysis_file"
-    echo "$Average_Response_Time,$Throughput_Rate,$Successful_Request_Rate,$Error_Rate,$Request_Sent_Rate,$cpu_average,$nlwp_average" >> "$analysis_file"
+    echo "$initial_clients,$Average_Response_Time,$Throughput_Rate,$Successful_Request_Rate,$Error_Rate,$Request_Sent_Rate,$cpu_average,$nlwp_average" >> "$analysis_file"
     # Increment the number of initial clients for the next iteration (you can adjust this increment as needed)
     initial_clients=$((initial_clients + 2))
 done

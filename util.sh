@@ -1,6 +1,5 @@
 #!/bin/bash
 
-output_file="util/"
 mkdir -p "$output_file"
 # echo "Timestamp, CPU_Utilization, NLWP" >> "$output_file/util.log"
 
