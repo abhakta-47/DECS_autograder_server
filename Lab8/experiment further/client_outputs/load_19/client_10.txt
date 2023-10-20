@@ -1,7 +1,0 @@
-Throughput is: 1.3905344
-Average response time in Sec: 0.7191480
-Successful Request Rate in res/Sec: 1.3905344
-Total Response Time in Sec: 2.8765920
-Timeout Rate in res/Sec: 0.0000000
-Error Rate in res/Sec: 0.0000000
-Request Sent Rate in res/microSec: 0.6952672

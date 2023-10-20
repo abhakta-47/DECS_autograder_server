@@ -1,7 +1,0 @@
-Throughput is : 1.5417966
-Average Response Time is : 0.6485940
-Successful Request Rate is : 1.5417966
-Total Response Time is : 1.2971880
-Timeout Rate is : 0.0000000
-Error rate is : 0.0000000
-Request rate is : 1.5417966
