@@ -47,7 +47,7 @@ void *handle_client(void *arg) {
 
               write(fileDescriptor, buffer, n);
               close(fileDescriptor);
-
+              sleep(2);
               int stderrFileDescriptor = open("error_output.txt", O_WRONLY | O_CREAT, 0666);
               if (stderrFileDescriptor < 0)
                 error("ERROR opening error_output.txt");
