@@ -11,6 +11,7 @@ throughput = df['Throughput']
 successful_response = df['Successful_response']
 error_rate = df['Error_Rate']
 request_sent_rate = df['Request_Sent_Rate']
+avg_cpu = df['Average_CPU']
 
 # Create subplots
 fig, axs = plt.subplots(3, 2, figsize=(12, 8))
@@ -20,6 +21,12 @@ axs[0, 0].plot(load, average_resp_time, marker='o', linestyle='--', color='m')
 axs[0, 0].set_title('Average Response Time vs Load')
 axs[0, 0].set_xlabel('Load (M)')
 axs[0, 0].set_ylabel('Average Response Time')
+
+# Plot Average CPU vs Load
+axs[0, 1].plot(load, avg_cpu, marker='o', linestyle='--', color='m')
+axs[0, 1].set_title('Average CPU vs Load')
+axs[0, 1].set_xlabel('Load (M)')
+axs[0, 1].set_ylabel('Average CPU')
 
 # Plot Throughput vs Load
 axs[1, 0].plot(load, throughput, marker='o', linestyle='--', color='c')
