@@ -1,0 +1,136 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <unistd.h>
+
+#include "common.h"
+
+int sock_read_int(int sock, int size) {
+    char buffer[size];
+    if (recv(sock, buffer, size, 0) == -1) {
+        return -1;
+    }
+    int result;
+    memcpy(&result, buffer, size);
+    return result;
+}
+
+int sock_write_int(int sock, int value, int size) {
+    char buffer[size];
+    memcpy(buffer, &value, size);
+    if (send(sock, buffer, size, 0) == -1) {
+        return -1;
+    }
+    return 0;
+}
+
+char *colorizeText(const char *text, enum TextColor color) {
+    const char *escapeCode = "\033[";
+
+    // Define color codes
+    const char *colorCodes[] = {
+        "0m",    // Default color
+        "1;31m", // Red
+        "1;32m", // Green
+        "1;34m", // Blue
+        "1;33m", // Yellow
+        "1;36m", // Cyan
+        "1;35m", // Magenta
+        "1;37m"  // White
+    };
+
+    char *colorizedText = (char *)malloc(
+        strlen(escapeCode) + strlen(colorCodes[color]) + strlen(text) +
+        strlen(escapeCode) + strlen(colorCodes[0]) + 1);
+
+    strcpy(colorizedText, escapeCode);
+    strcat(colorizedText, colorCodes[color]);
+    strcat(colorizedText, text);
+    strcat(colorizedText, escapeCode);
+    strcat(colorizedText, colorCodes[0]);
+
+    return colorizedText;
+}
+
+int recv_file(int sockfd, const char *file_path) {
+    char buffer[BUFFER_SIZE];
+    memset(buffer, 0, BUFFER_SIZE);
+    FILE *file = fopen(file_path, "wb");
+    if (!file) {
+        perror("Error opening file");
+        return -1;
+    }
+
+    // char file_size_bytes[MAX_FILE_SIZE_BYTES];
+
+    // if (recv(sockfd, file_size_bytes, sizeof(file_size_bytes), 0) == -1) {
+    //     perror("Error receiving file size");
+    //     fclose(file);
+    //     return -1;
+    // }
+
+    int file_size;
+    // memcpy(&file_size, file_size_bytes, sizeof(file_size_bytes));
+    file_size = sock_read_int(sockfd, sizeof(int));
+
+    size_t bytes_read = 0, total_bytes_read = 0;
+    while (1) {
+        bytes_read = recv(sockfd, buffer, sizeof(buffer), 0);
+        total_bytes_read += bytes_read;
+
+        if (bytes_read <= 0) {
+            perror("Error receiving file data");
+            fclose(file);
+            return -1;
+        }
+
+        fwrite(buffer, 1, bytes_read, file);
+        memset(buffer, 0, BUFFER_SIZE);
+
+        if (total_bytes_read >= file_size)
+            break;
+    }
+    fclose(file);
+    return 0;
+}
+
+int send_file(int sockfd, const char *file_path) {
+    char buffer[BUFFER_SIZE];
+    memset(buffer, 0, BUFFER_SIZE);
+    FILE *file = fopen(file_path, "rb");
+    if (!file) {
+        perror("Error opening file");
+        return -1;
+    }
+
+    fseek(file, 0L, SEEK_END);
+    int file_size = ftell(file);
+    fseek(file, 0L, SEEK_SET);
+
+    // char file_size_bytes[MAX_FILE_SIZE_BYTES];
+    // memcpy(file_size_bytes, &file_size, sizeof(file_size_bytes));
+
+    // if (send(sockfd, file_size_bytes, sizeof(file_size_bytes), 0) == -1) {
+    //     perror("Error sending file size");
+    //     fclose(file);
+    //     return -1;
+    // }
+
+    sock_write_int(sockfd, file_size, sizeof(int));
+
+    while (!feof(file)) {
+        size_t bytes_read = fread(buffer, 1, BUFFER_SIZE - 1, file);
+
+        if (send(sockfd, buffer, bytes_read + 1, 0) == -1) {
+            perror("Error sending file data");
+            fclose(file);
+            return -1;
+        }
+
+        memset(buffer, 0, BUFFER_SIZE);
+    }
+
+    fclose(file);
+    return 0;
+}
