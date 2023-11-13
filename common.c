@@ -6,23 +6,20 @@
 
 #include "common.h"
 
-int sock_read_int(int sock, int size) {
-    char buffer[size];
-    if (recv(sock, buffer, size, 0) == -1) {
+int sock_read_int(int sock) {
+    int val;
+    if (recv(sock, &val, sizeof(val), 0) == -1) {
+        perror("Error receiving file size");
         return -1;
     }
-    int result;
-    memcpy(&result, buffer, size);
-    return result;
+    return val;
 }
 
-int sock_write_int(int sock, int value, int size) {
-    char buffer[size];
-    memcpy(buffer, &value, size);
-    if (send(sock, buffer, size, 0) == -1) {
+int sock_write_int(int sock, int value) {
+    if (send(sock, &value, sizeof(value), 0) == -1) {
+        perror("Error sending file size");
         return -1;
     }
-    return 0;
 }
 
 char *colorizeText(const char *text, enum TextColor color) {
@@ -62,20 +59,15 @@ int recv_file(int sockfd, const char *file_path) {
         return -1;
     }
 
-    // char file_size_bytes[MAX_FILE_SIZE_BYTES];
-
-    // if (recv(sockfd, file_size_bytes, sizeof(file_size_bytes), 0) == -1) {
-    //     perror("Error receiving file size");
-    //     fclose(file);
-    //     return -1;
-    // }
-
     int file_size;
-    // memcpy(&file_size, file_size_bytes, sizeof(file_size_bytes));
-    file_size = sock_read_int(sockfd, sizeof(int));
+    file_size = sock_read_int(sockfd);
+    if (file_size == -1) {
+        perror("Error receiving file size");
+        return -1;
+    }
 
     size_t bytes_read = 0, total_bytes_read = 0;
-    while (1) {
+    while (total_bytes_read < file_size) {
         bytes_read = recv(sockfd, buffer, sizeof(buffer), 0);
         total_bytes_read += bytes_read;
 
@@ -87,9 +79,6 @@ int recv_file(int sockfd, const char *file_path) {
 
         fwrite(buffer, 1, bytes_read, file);
         memset(buffer, 0, BUFFER_SIZE);
-
-        if (total_bytes_read >= file_size)
-            break;
     }
     fclose(file);
     return 0;
@@ -108,21 +97,16 @@ int send_file(int sockfd, const char *file_path) {
     int file_size = ftell(file);
     fseek(file, 0L, SEEK_SET);
 
-    // char file_size_bytes[MAX_FILE_SIZE_BYTES];
-    // memcpy(file_size_bytes, &file_size, sizeof(file_size_bytes));
-
-    // if (send(sockfd, file_size_bytes, sizeof(file_size_bytes), 0) == -1) {
-    //     perror("Error sending file size");
-    //     fclose(file);
-    //     return -1;
-    // }
-
-    sock_write_int(sockfd, file_size, sizeof(int));
+    if (sock_write_int(sockfd, file_size) == -1) {
+        perror("Error sending file size");
+        fclose(file);
+        return -1;
+    }
 
     while (!feof(file)) {
-        size_t bytes_read = fread(buffer, 1, BUFFER_SIZE - 1, file);
+        size_t bytes_read = fread(buffer, 1, sizeof(buffer), file);
 
-        if (send(sockfd, buffer, bytes_read + 1, 0) == -1) {
+        if (send(sockfd, buffer, bytes_read, 0) == -1) {
             perror("Error sending file data");
             fclose(file);
             return -1;

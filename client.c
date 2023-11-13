@@ -104,15 +104,7 @@ int main(int argc, char *argv[]) {
 
         gettimeofday(&start, NULL);
 
-        // write(sockfd, NameOfFile, strlen(NameOfFile) + 1);
-        // write(sockfd, ACTION_SUBMIT, sizeof(int));
-        // ack = read()
-        sock_write_int(sockfd, ACTION_SUBMIT, ACTION_SIZE);
-
-        // while ((bytesRead = read(SourceOfFile, SourceOfFileBuf,
-        //                          sizeof(SourceOfFileBuf))) > 0) {
-        //     write(sockfd, SourceOfFileBuf, bytesRead);
-        // }
+        sock_write_int(sockfd, ACTION_SUBMIT);
         send_file(sockfd, NameOfFile);
 
         // Code to handle server response and other operations

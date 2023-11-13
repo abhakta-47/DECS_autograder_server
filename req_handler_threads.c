@@ -16,8 +16,7 @@ int req_handler(int *clientSocket) {
     // Done : read only flag portion of socket file send socket to
     // new_submission or status_check
     int sockfd = *clientSocket;
-    int action = sock_read_int(sockfd, ACTION_SIZE);
-    printf("action: %d\n", action);
+    int action = sock_read_int(sockfd);
     switch (action) {
     case ACTION_SUBMIT:
         // Todo handle error ie returns -1
@@ -36,15 +35,14 @@ int req_handler(int *clientSocket) {
 int new_submission(int sockfd) {
     // Done : gen uuid save payload file to appropriate location
     char *uuid = gen_uuid();
-    printf("UUUID: %s\n", uuid);
-    char cpp_file_path_size[UUID_SIZE + strlen(SUBMISSION_FOLDER) + 2];
+
+    printf("UUID : %s\n", uuid);
+    char cpp_file_path_size[UUID_SIZE + strlen(SUBMISSION_FOLDER)];
     strcpy(cpp_file_path_size, SUBMISSION_FOLDER);
     strcat(cpp_file_path_size, uuid);
-    strcat(cpp_file_path_size, ".c");
     recv_file(sockfd, cpp_file_path_size);
     // return "id";
     write(sockfd, uuid, UUID_SIZE);
-    printf("UUUID: %s\n", uuid);
 }
 
 int status_check(int sockfd) {
