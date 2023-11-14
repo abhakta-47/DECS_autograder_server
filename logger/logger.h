@@ -9,7 +9,7 @@
 
 typedef enum { LOG_INFO, LOG_WARNING, LOG_ERROR } LogLevel;
 
-#define DEFAULT_LOG_FILE "server_logs.txt"
+#define DEFAULT_LOG_FILE "server_runtime/server_logs.txt"
 
 void init_logger(const char *filename);
 void close_logger();

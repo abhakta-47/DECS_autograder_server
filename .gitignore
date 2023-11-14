@@ -3,8 +3,6 @@
 
 # object files
 build/
-server
-client
 *.o
 *.out
 
