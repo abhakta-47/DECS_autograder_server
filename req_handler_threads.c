@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -7,6 +8,10 @@
 #include "constants.h"
 #include "gen_uuid.h"
 #include "req_handler_threads.h"
+#include "thread_pool.h"
+#include "worker_threads.h"
+
+extern struct ThreadPool *global_thread_pool;
 
 int file_exists(char *file_paht) {
     // todo implement function
@@ -37,12 +42,26 @@ int new_submission(int sockfd) {
     char *uuid = gen_uuid();
 
     printf("UUID : %s\n", uuid);
-    char cpp_file_path_size[UUID_SIZE + strlen(SUBMISSION_FOLDER)];
-    strcpy(cpp_file_path_size, SUBMISSION_FOLDER);
-    strcat(cpp_file_path_size, uuid);
-    recv_file(sockfd, cpp_file_path_size);
-    // return "id";
-    write(sockfd, uuid, UUID_SIZE);
+    char cpp_file_path[UUID_SIZE + strlen(SUBMISSION_FOLDER) + 2];
+    strcpy(cpp_file_path, SUBMISSION_FOLDER);
+    strcat(cpp_file_path, uuid);
+    strcat(cpp_file_path, ".c");
+    if (recv_file(sockfd, cpp_file_path) == -1) {
+        perror("Error receiving file");
+        return -1;
+    }
+
+    const char *status_file_path[] = {STATUS_FOLDER, uuid, NULL};
+    char *status_file = concat_strings(status_file_path, "");
+    FILE *status_fd = fopen(status_file, "w");
+    fprintf(status_fd, "RECEIVED");
+    fclose(status_fd);
+    free(status_file);
+
+    struct ThreadPool *thread_pool = global_thread_pool;
+    ThreadPoolAddTask(thread_pool, worker_task, (void *)uuid);
+
+    return write(sockfd, uuid, UUID_SIZE);
 }
 
 int status_check(int sockfd) {

@@ -1,5 +1,3 @@
-#!/bin/bash
-
 OBJS = server.o myqueue.o common.o gen_uuid.o thread_pool.o req_handler_threads.o worker_threads.o
 
 all: server client
@@ -22,7 +20,7 @@ thread_pool.o: thread_pool.c
 req_handler_threads.o: req_handler_threads.c
 	gcc -c req_handler_threads.c
 
-worker_threads.o: worker_threads.c
+worker_threads.o: worker_threads.c worker_threads.h
 	gcc -c worker_threads.c
 
 server: $(OBJS) constants.h

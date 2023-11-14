@@ -16,45 +16,21 @@
 
 #define MAX_THREADS 20 // Maximum number of threads in the pool
 
-pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t queue_cond = PTHREAD_COND_INITIALIZER;
-int pool_size;
-
 void error(char *msg) {
     perror(msg);
     exit(1);
 }
 
-// Function to handle each client request in a separate thread
-void *handle_client(void *arg) {
-    while (1) {
-        pthread_mutex_lock(&queue_mutex);
-        while (pool_size == 0) {
-            pthread_cond_wait(&queue_cond, &queue_mutex);
-        }
-        int *clientSocket = dequeue();
-        pool_size--;
-        pthread_mutex_unlock(&queue_mutex);
-
-        if (clientSocket) {
-            req_handler(clientSocket);
-            close(*clientSocket);
-            free(clientSocket);
-        }
-    }
-}
+extern struct ThreadPool *global_thread_pool = NULL;
 
 int main(int argc, char *argv[]) {
     int listenSocket, portNumber;
     socklen_t clientAddressLength;
     struct sockaddr_in serverAddress, clientAddress;
-    // pthread_t thread_id; // Thread ID for creating worker threads
 
-    // pthread_t thread_pool[MAX_THREADS];
-    // for (int i = 0; i < MAX_THREADS; i++) {
-    //     pthread_create(&thread_pool[i], NULL, handle_client, NULL);
-    // }
-    struct ThreadPool *req_pool = ThreadPoolInit(MAX_THREADS);
+    struct ThreadPool *thread_pool;
+    thread_pool = ThreadPoolInit(MAX_THREADS);
+    global_thread_pool = thread_pool;
 
     if (argc < 2) {
         fprintf(stderr, "ERROR, no port provided\n");
@@ -89,26 +65,9 @@ int main(int argc, char *argv[]) {
         if (*newSocket < 0)
             error("ERROR on accept");
 
-        ThreadPoolAddTask(req_pool, req_handler, (void *)newSocket);
-
-        // pthread_mutex_lock(&queue_mutex);
-        // enqueue(newSocket);
-        // pool_size++;
-        // pthread_cond_signal(&queue_cond);
-        // pthread_mutex_unlock(&queue_mutex);
-        // Create a new thread to handle the client request
-        // if (pthread_create(&thread_id, NULL, handle_client, (void
-        // *)newSocket) != 0) {
-        //   perror("pthread_create");
-        //   exit(1);
-        // }
-
-        // Detach the thread to avoid memory leaks
-        // pthread_detach(thread_id);
+        ThreadPoolAddTask(thread_pool, req_handler, (void *)newSocket);
     }
-    // for (int i = 0; i < MAX_THREADS; i++) {
-    //     pthread_join(thread_pool[i], NULL);
-    // }
+
     close(listenSocket);
 
     return 0;
