@@ -11,3 +11,7 @@ server.o
 server_to_client_response_file.txt
 util/
 server_metrics.png
+
+*.o
+*.out
+.vscode/

@@ -1,4 +1,4 @@
-OBJS = server.o myqueue.o common.o gen_uuid.o thread_pool.o req_handler_threads.o worker_threads.o
+OBJS = server.o myqueue.o common.o gen_uuid.o thread_pool.o req_handler_threads.o worker_threads.o logger.o
 
 all: server client
 
@@ -22,6 +22,9 @@ req_handler_threads.o: req_handler_threads.c
 
 worker_threads.o: worker_threads.c worker_threads.h
 	gcc -c worker_threads.c
+
+logger.o: logger.c
+	gcc -c logger.c
 
 server: $(OBJS) constants.h
 	gcc $(OBJS) -o server -luuid
