@@ -118,3 +118,38 @@ int send_file(int sockfd, const char *file_path) {
     fclose(file);
     return 0;
 }
+
+// given array of char* ending with NULL,
+// returns a string with all the strings concatenated
+char *concat_strings(const char *strings[], const char *separator) {
+    int count = 0;
+
+    size_t total_length = 0;
+
+    while (strings[count] != NULL) {
+        total_length += strlen(strings[count]);
+        count++;
+    }
+
+    total_length += (count - 1) * strlen(separator);
+
+    // Allocate memory for the concatenated string
+    char *result =
+        (char *)malloc(total_length + 1); // +1 for the null terminator
+
+    if (result == NULL) {
+        return NULL; // Memory allocation failed
+    }
+
+    // Concatenate the strings into the result
+    strcpy(result, "");
+
+    for (int i = 0; i < count; i++) {
+        if (strings[i] != NULL) {
+            strcat(result, strings[i]);
+            strcat(result, separator);
+        }
+    }
+
+    return result;
+}

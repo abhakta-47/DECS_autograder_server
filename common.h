@@ -12,5 +12,6 @@ int sock_read_int(int sock);
 int sock_write_int(int sock, int value);
 int recv_file(int sockfd, const char *file_path);
 int send_file(int sockfd, const char *file_path);
+char *concat_strings(const char *[], const char *);
 
 #endif // COMMON_H
