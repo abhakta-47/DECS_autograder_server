@@ -73,26 +73,26 @@ int worker_task(const char *req_id) {
     FILE *status_fd = fopen(status_file_path, "w");
     int compileStatus = compile_task(req_id);
     if (compileStatus != 0) {
-        fprintf(status_fd, "COMPILE_ERROR");
+        fprintf(status_fd, "COMPILE_ERROR\n");
+        fclose(status_fd);
         return 0;
     }
-    fprintf(status_fd, "COMPILED");
+    fprintf(status_fd, "COMPILED\n");
 
     int runStatus = run_task(req_id);
     if (runStatus != 0) {
-        fprintf(status_fd, "RUNTIME_ERROR");
+        fprintf(status_fd, "RUNTIME_ERROR\n");
+        fclose(status_fd);
         return 0;
     }
-    fprintf(status_fd, "EXECUTED");
+    fprintf(status_fd, "EXECUTED\n");
 
     int diffStatus = diff_task(req_id);
-    if (diffStatus != 0) {
-        fprintf(status_fd, "SUCCESS");
-        return 0;
-    } else {
-        fprintf(status_fd, "WRONG_ANSWER");
-        return 0;
-    }
+    if (diffStatus != 0)
+        fprintf(status_fd, "WRONG_ANSWER\n");
+    else
+        fprintf(status_fd, "SUCCESS\n");
 
     fclose(status_fd);
+    return 0;
 }
