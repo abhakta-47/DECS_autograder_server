@@ -3,11 +3,11 @@
 
 #define UUID_SIZE 37
 
-#define STATUS_FOLDER "status/"
-#define SUBMISSION_FOLDER "submissions/"
-#define COMPILED_FOLDER "compiled/"
-#define OUTPUT_FOLDER "outputs/"
-#define DIFF_FOLDER "diff/"
+#define STATUS_FOLDER "server_runtime/status/"
+#define SUBMISSION_FOLDER "server_runtime/submissions/"
+#define COMPILED_FOLDER "server_runtime/compiled/"
+#define OUTPUT_FOLDER "server_runtime/outputs/"
+#define DIFF_FOLDER "server_runtime/diff/"
 
 #define ACTION_SIZE sizeof(int)
 enum ACTIONS {

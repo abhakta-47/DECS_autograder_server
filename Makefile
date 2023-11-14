@@ -1,44 +1,50 @@
-OBJS = server.o myqueue.o common.o gen_uuid.o thread_pool.o req_handler_threads.o worker_threads.o logger.o
+# Directories
+ROOT_DIR := .
 
+BUILD_DIR := build
+COMMON_DIR := common
+LOGGER_DIR := logger
+CLIENT_DIR := client
+SERVER_DIR := server
+THREAD_POOL_DIR := thread_pool
+
+# Flags
+CFLAGS := -I$(ROOT_DIR)
+
+# Object files
+OBJS = $(BUILD_DIR)/server.o $(BUILD_DIR)/myqueue.o $(BUILD_DIR)/common.o \
+       $(BUILD_DIR)/gen_uuid.o $(BUILD_DIR)/thread_pool.o \
+       $(BUILD_DIR)/req_handler_threads.o $(BUILD_DIR)/worker_threads.o \
+       $(BUILD_DIR)/logger.o
+
+# Targets
 all: server client
 
-myqueue.o: myqueue.c
-	gcc -c myqueue.c
+$(BUILD_DIR)/%.o: $(COMMON_DIR)/%.c
+	gcc -c $(CFLAGS) $< -o $@
 
-server.o: server.c
-	gcc -c server.c
+$(BUILD_DIR)/%.o: $(THREAD_POOL_DIR)/%.c
+	gcc -c $(CFLAGS) $< -o $@
 
-common.o: common.c
-	gcc -c common.c
+$(BUILD_DIR)/%.o: $(SERVER_DIR)/%.c
+	gcc -c $(CFLAGS) $< -o $@
 
-gen_uuid.o: gen_uuid.c
-	gcc -c gen_uuid.c
+$(BUILD_DIR)/%.o: $(LOGGER_DIR)/%.c
+	gcc -c $(CFLAGS) $< -o $@
 
-thread_pool.o: thread_pool.c
-	gcc -c thread_pool.c
+$(BUILD_DIR)/server: $(OBJS) constants.h
+	gcc $(CFLAGS) $(OBJS) -o $@ -luuid
 
-req_handler_threads.o: req_handler_threads.c
-	gcc -c req_handler_threads.c
+$(BUILD_DIR)/client: $(BUILD_DIR)/common.o $(CLIENT_DIR)/client.c constants.h
+	gcc $(CFLAGS) $(BUILD_DIR)/common.o -o $@ $(CLIENT_DIR)/client.c
 
-worker_threads.o: worker_threads.c worker_threads.h
-	gcc -c worker_threads.c
+server: $(BUILD_DIR)/server
 
-logger.o: logger.c
-	gcc -c logger.c
-
-server: $(OBJS) constants.h
-	gcc $(OBJS) -o server -luuid
-
-client: common.o client.c constants.h
-	gcc common.o -o client client.c
-
-#run: all
-#	./server  &
-#	sleep 3 && ./performance_starter.sh
+client: $(BUILD_DIR)/client
 
 clean:
-	rm $(OBJS) server client
+	rm -f $(OBJS) $(BUILD_DIR)/server $(BUILD_DIR)/client
 	rm -f analysis.txt diff_output.txt error_output.txt out_gen.txt server_to_client_response_file.txt c_code_server.c diff_out.txt
-	rm -rf client_outputs util
+	rm -rf $(CLIENT_DIR)/client_outputs $(CLIENT_DIR)/util
 	pkill server
 	pkill util.sh
