@@ -9,7 +9,7 @@ SERVER_DIR := server
 THREAD_POOL_DIR := thread_pool
 
 # Flags
-CFLAGS := -I$(ROOT_DIR)
+CFLAGS := -I$(ROOT_DIR) -g
 
 # Object files
 OBJS = $(BUILD_DIR)/server.o $(BUILD_DIR)/myqueue.o $(BUILD_DIR)/common.o \
