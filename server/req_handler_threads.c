@@ -74,5 +74,24 @@ int status_check(int sockfd) {
     strcpy(status_file_path, STATUS_FOLDER);
     strcat(status_file_path, req_id);
     // TODO file doesn't exist
-    return send_file(sockfd, status_file_path);
+    FILE *status_file = fopen(status_file_path, "r");
+
+    if (status_file == -1) {
+        perror("Error opening status file");
+        char *err_msg = "WRONG ID";
+        write(sockfd, err_msg, strlen(err_msg));
+        return -1;
+    }
+
+    //  get last line of status_file
+    char status[1024];
+    char *last_line = NULL;
+    while (fgets(status, 1024, status_file) != NULL) {
+        last_line = status;
+    }
+
+    printf("status last line %s", last_line);
+    fclose(status_file);
+    write(sockfd, last_line, strlen(last_line));
+    return 0;
 }

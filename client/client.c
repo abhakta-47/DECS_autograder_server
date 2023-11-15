@@ -19,7 +19,111 @@ void error(char *msg) {
     exit(1);
 }
 
-int check_func() { return 0; }
+double totalResponseTime = 0.0;
+int successfulRes = 0;
+int numOfTimeouts = 0;
+int numErrResponses = 0;
+
+struct timeval timeout;
+
+int check_func(int sockfd, char *req_id) {
+    sock_write_int(sockfd, ACTION_CHECK);
+    send(sockfd, req_id, strlen(req_id), 0);
+    char server_response[1024];
+    bzero(server_response, sizeof(server_response));
+    int server_response_len =
+        read(sockfd, server_response, sizeof(server_response));
+    printf("server_response: %s\n", server_response);
+    if (strcmp(server_response, "SUCCESS"))
+        return 0;
+    if (strcmp(server_response, "COMPILE_ERROR"))
+        return 1;
+    if (strcmp(server_response, "RUNTIME_ERROR"))
+        return 2;
+    if (strcmp(server_response, "WRONG_ANSWER"))
+        return 3;
+    if (strcmp(server_response, "RECEIVED"))
+        return 4;
+
+    return 5;
+}
+
+int submit_func(int sockfd, char *NameOfFile) {
+
+    sock_write_int(sockfd, ACTION_SUBMIT);
+    send_file(sockfd, NameOfFile);
+
+    // Code to handle server response and other operations
+    char server_to_client_response_file[] =
+        "server_to_client_response_file.txt";
+    int server_to_client_response_file_fd =
+        open(server_to_client_response_file, O_CREAT | O_RDWR | O_TRUNC, 0777);
+
+    char server_response[1024];
+    bzero(server_response, sizeof(server_response));
+    int server_response_len =
+        read(sockfd, server_response, sizeof(server_response));
+
+    if (server_response_len < 0) {
+        if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
+            numOfTimeouts++;
+            printf("timeout detected");
+            // fprintf(stderr, "Timeout occurred on read, req no: %d\n", i);
+            // timeout.tv_sec = time_out + i * 2; // Change the timeout by n
+            // seconds
+            // timeout.tv_usec = 0;
+            // continue;
+        } else {
+            printf("ERROR reading from socket");
+            numErrResponses++;
+            return -1;
+        }
+    } else {
+        // If the response contains "PASS", consider it a successful
+        // response
+        // printf("Success detected ");
+        successfulRes++;
+    }
+
+    write(server_to_client_response_file_fd, server_response,
+          server_response_len);
+    printf("server_response: %s\n", server_response);
+}
+
+int new_sockfd(char *serverAddressVar, int portno) {
+    int sockfd, n;
+    struct sockaddr_in serv_addr;
+    struct hostent *server;
+    char buffer[1024];
+
+    // for (int i = 0; i < loop; i++) {
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
+    if (sockfd < 0)
+        error("ERROR opening socket");
+
+    server = gethostbyname(serverAddressVar);
+
+    if (server == NULL) {
+        fprintf(stderr, "ERROR, no such host\n");
+        exit(1);
+    }
+
+    if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout,
+                   sizeof(timeout)) < 0)
+        error("setsockopt (SO_RCVTIMEO) failed\n");
+
+    bzero((char *)&serv_addr, sizeof(serv_addr));
+    serv_addr.sin_family = AF_INET;
+    bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr,
+          server->h_length);
+    serv_addr.sin_port = htons(portno);
+
+    if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+        error("ERROR connecting");
+
+    return sockfd;
+}
 
 int main(int argc, char *argv[]) {
     if (argc != 8) {
@@ -30,11 +134,6 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    double totalResponseTime = 0.0;
-    int successfulRes = 0;
-    int numOfTimeouts = 0;
-    int numErrResponses = 0;
-
     char *serverAddressVar = argv[1];
     int portno = atoi(argv[2]);
     char *sourceCodeFileVar = argv[3];
@@ -43,118 +142,54 @@ int main(int argc, char *argv[]) {
     int timeout_seconds = atoi(argv[6]);
     char *action = argv[7];
 
+    timeout.tv_sec = timeout_seconds;
+    timeout.tv_usec = 0;
+
+    // Send source file to server
+    char *NameOfFile = sourceCodeFileVar;
+    // int SourceOfFile = open(NameOfFile, O_RDONLY);
+
+    // if (SourceOfFile < 0) {
+    //     error("Can't open the source file");
+    // }
+
+    // char SourceOfFileBuf[1024];
+
     if (strcmp(action, "submit") == 0) {
-        printf("Action : submit\n");
-    } else if (strcmp(action, "check") == 0) {
-        printf("Action : check\n");
-        check_func();
-        exit(0);
-    } else {
-        printf("Invalid action\n");
-        exit(1);
-    }
-
-    int sockfd, n;
-    struct sockaddr_in serv_addr;
-    struct hostent *server;
-    char buffer[1024];
-
-    for (int i = 0; i < loop; i++) {
-        sockfd = socket(AF_INET, SOCK_STREAM, 0);
-
-        if (sockfd < 0)
-            error("ERROR opening socket");
-
-        server = gethostbyname(serverAddressVar);
-
-        if (server == NULL) {
-            fprintf(stderr, "ERROR, no such host\n");
-            exit(1);
-        }
-
-        struct timeval timeout;
-        timeout.tv_sec = timeout_seconds;
-        timeout.tv_usec = 0;
-
-        if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout,
-                       sizeof(timeout)) < 0)
-            error("setsockopt (SO_RCVTIMEO) failed\n");
-
-        bzero((char *)&serv_addr, sizeof(serv_addr));
-        serv_addr.sin_family = AF_INET;
-        bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr,
-              server->h_length);
-        serv_addr.sin_port = htons(portno);
-
-        if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) <
-            0)
-            error("ERROR connecting");
-
-        // Send source file to server
-        char *NameOfFile = sourceCodeFileVar;
-        // int SourceOfFile = open(NameOfFile, O_RDONLY);
-
-        // if (SourceOfFile < 0) {
-        //     error("Can't open the source file");
-        // }
-
-        // char SourceOfFileBuf[1024];
-        int bytesRead;
-        struct timeval start, end;
-
-        gettimeofday(&start, NULL);
-
-        sock_write_int(sockfd, ACTION_SUBMIT);
-        send_file(sockfd, NameOfFile);
-
-        // Code to handle server response and other operations
-        char server_to_client_response_file[] =
-            "server_to_client_response_file.txt";
-        int server_to_client_response_file_fd = open(
-            server_to_client_response_file, O_CREAT | O_RDWR | O_TRUNC, 0777);
-
-        char server_response[1024];
-        bzero(server_response, sizeof(server_response));
-        int server_response_len =
-            read(sockfd, server_response, sizeof(server_response));
-
-        if (server_response_len < 0) {
-            if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
-                numOfTimeouts++;
-                printf("timeout detected");
-                fprintf(stderr, "Timeout occurred on read, req no: %d\n", i);
-                // timeout.tv_sec = time_out+ i*2;  // Change the timeout by n
-                // seconds
-                // timeout.tv_usec = 0;
-                // continue;
-            } else {
-                printf("ERROR reading from socket");
-                numErrResponses++;
-                continue;
-            }
-        } else {
-            // If the response contains "PASS", consider it a successful
-            // response
-            // printf("Success detected ");
-            successfulRes++;
-        }
-
-        write(server_to_client_response_file_fd, server_response,
-              server_response_len);
-        printf("server_response: %s\n", server_response);
-
-        gettimeofday(&end, NULL);
-        double responseTime = (double)(end.tv_sec - start.tv_sec) +
-                              (double)(end.tv_usec - start.tv_usec) / 1000000.0;
-        totalResponseTime += responseTime;
-        // successfulRes++;
-
-        // Handle sleep time
-        sleep(sleepTime);
-
-        // close(SourceOfFile);
+        int sockfd = new_sockfd(serverAddressVar, portno);
+        submit_func(sockfd, NameOfFile);
         close(sockfd);
+
+    } else if (strcmp(action, "check") == 0) {
+        int status = 4;
+        while (status == 4) {
+            int sockfd = new_sockfd(serverAddressVar, portno);
+            status = check_func(sockfd, NameOfFile);
+            close(sockfd);
+        }
     }
+
+    int bytesRead;
+    struct timeval start, end;
+
+    gettimeofday(&start, NULL);
+
+    // reqid
+    // while(true){
+
+    //}
+
+    gettimeofday(&end, NULL);
+    double responseTime = (double)(end.tv_sec - start.tv_sec) +
+                          (double)(end.tv_usec - start.tv_usec) / 1000000.0;
+    totalResponseTime += responseTime;
+    // successfulRes++;
+
+    // Handle sleep time
+    sleep(sleepTime);
+
+    // close(SourceOfFile);
+    // }
 
     // Calculate average response time
     double averageResponseTime = totalResponseTime / successfulRes;

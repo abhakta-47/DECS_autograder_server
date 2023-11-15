@@ -72,11 +72,12 @@ int worker_task(const char *req_id) {
     strcpy(status_file_path, STATUS_FOLDER);
     strcat(status_file_path, req_id);
     FILE *status_fd = fopen(status_file_path, "w");
+
     int compileStatus = compile_task(req_id);
     if (compileStatus != 0) {
         fprintf(status_fd, "COMPILE_ERROR\n");
         fclose(status_fd);
-        return 0;
+        return -1;
     }
     fprintf(status_fd, "COMPILED\n");
 
@@ -84,7 +85,7 @@ int worker_task(const char *req_id) {
     if (runStatus != 0) {
         fprintf(status_fd, "RUNTIME_ERROR\n");
         fclose(status_fd);
-        return 0;
+        return -1;
     }
     fprintf(status_fd, "EXECUTED\n");
 
@@ -96,5 +97,5 @@ int worker_task(const char *req_id) {
 
     fclose(status_fd);
     log_message(LOG_INFO, "Worker task for %s ended", req_id);
-    return 0;
+    return (diffStatus != 0);
 }

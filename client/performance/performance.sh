@@ -18,6 +18,8 @@ output_folder="client_outputs/load_$load_value"
 mkdir -p "$output_folder"
 
 for ((i = 1; i <= numClients; i++)); do
+    # ./client "$localhost" "$port" "$c_file" "$loopNum" "$sleepTime" "$timeout"> "$output_folder/client_$i.txt" &
+    req_id=$(./client "$localhost" "$port" "$c_file" "$loopNum" "$sleepTime" "$timeout" submit)
     ./client "$localhost" "$port" "$c_file" "$loopNum" "$sleepTime" "$timeout"> "$output_folder/client_$i.txt" &
 done
 
