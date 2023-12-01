@@ -3,6 +3,7 @@
 #include "logger.h"
 #include <stdlib.h>
 #include <time.h>
+#include <stdbool.h>
 
 #define MAX_LOG_MESSAGE_SIZE 1024
 
@@ -24,9 +25,12 @@ void close_logger() {
 }
 
 void log_message(LogLevel level, const char *format, ...) {
+    bool std_op = false;
 
     if (log_file == NULL) {
-        init_logger(DEFAULT_LOG_FILE);
+        // init_logger(DEFAULT_LOG_FILE);
+        // log_file = STD_OUT;
+        std_op = true;
     }
 
     va_list args;
@@ -65,10 +69,23 @@ void log_message(LogLevel level, const char *format, ...) {
     }
 
     pthread_mutex_lock(&log_mutex);
-
-    fprintf(log_file, "[%s] [%s] [Thread:%lu] %s\n", time_buffer, severity_str,
+    if (std_op) {
+        if (level == LOG_ERROR || level == LOG_WARNING) {
+            fprintf(stderr, "[%s] [%s] [Thread:%lu] %s\n", time_buffer,
+                    severity_str, pthread_self(), log_message);
+            fflush(stderr);
+        } 
+        else {
+            fprintf(stdout, "[%s] [%s] [Thread:%lu] %s\n", time_buffer, severity_str,
+                    pthread_self(), log_message);
+            fflush(stdout);
+        }
+    }
+    else{
+        fprintf(log_file, "[%s] [%s] [Thread:%lu] %s\n", time_buffer, severity_str,
             pthread_self(), log_message);
-    fflush(log_file);
+        fflush(log_file);
+    }
 
     pthread_mutex_unlock(&log_mutex);
 }

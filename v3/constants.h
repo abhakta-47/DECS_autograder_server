@@ -24,7 +24,4 @@ enum FLAGS {
     OUTPUT_ERR,
 };
 
-char FLAG_STRING[][20] = {"CORRECT_ANSWER", "WRONG_ANSWER", "COMPILE_ERR",
-                          "RUNTIME_ERR", "OUTPUT_ERR"};
-
 #endif // CONSTANTS_H
