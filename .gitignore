@@ -2,7 +2,7 @@
 .vscode/
 
 # object files
-build/
+**/build/
 *.o
 *.out
 
@@ -15,3 +15,4 @@ diff_out.txt
 error_output.txt
 myqueue.o
 out_gen.txt
+loadtesting/runtimes/

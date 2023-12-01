@@ -18,25 +18,29 @@ OBJS = $(BUILD_DIR)/server.o $(BUILD_DIR)/myqueue.o $(BUILD_DIR)/common.o \
        $(BUILD_DIR)/logger.o
 
 # Targets
-all: server client
+all: $(BUILD_DIR) server client
 
-$(BUILD_DIR)/%.o: $(COMMON_DIR)/%.c
+# Rule to create the build directory
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
+
+$(BUILD_DIR)/%.o: $(COMMON_DIR)/%.c | $(BUILD_DIR)
 	gcc -c $(CFLAGS) $< -o $@
 
-$(BUILD_DIR)/%.o: $(THREAD_POOL_DIR)/%.c
+$(BUILD_DIR)/%.o: $(THREAD_POOL_DIR)/%.c | $(BUILD_DIR)
 	gcc -c $(CFLAGS) $< -o $@
 
-$(BUILD_DIR)/%.o: $(SERVER_DIR)/%.c
+$(BUILD_DIR)/%.o: $(SERVER_DIR)/%.c | $(BUILD_DIR)
 	gcc -c $(CFLAGS) $< -o $@
 
-$(BUILD_DIR)/%.o: $(LOGGER_DIR)/%.c
+$(BUILD_DIR)/%.o: $(LOGGER_DIR)/%.c | $(BUILD_DIR)
 	gcc -c $(CFLAGS) $< -o $@
 
-$(BUILD_DIR)/server: $(OBJS) constants.h
-	gcc $(CFLAGS) $(OBJS) -o $@ -luuid -lpthread
+$(BUILD_DIR)/server: $(OBJS) constants.h | $(BUILD_DIR)
+	gcc $(CFLAGS) $(OBJS) constants.h -o $@ -luuid -lpthread
 
-$(BUILD_DIR)/client: $(BUILD_DIR)/common.o $(CLIENT_DIR)/client.c constants.h
-	gcc $(CFLAGS) $(BUILD_DIR)/common.o -o $@ $(CLIENT_DIR)/client.c
+$(BUILD_DIR)/client: $(BUILD_DIR)/common.o $(BUILD_DIR)/logger.o $(CLIENT_DIR)/client.c constants.h | $(BUILD_DIR)
+	gcc $(CFLAGS)  $(BUILD_DIR)/common.o $(BUILD_DIR)/logger.o $(CLIENT_DIR)/client.c constants.h -o $@ 
 
 server: $(BUILD_DIR)/server
 
