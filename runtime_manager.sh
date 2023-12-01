@@ -19,6 +19,7 @@ if [ "$1" == "create" ]
   then
     mkdir -p build/
     cd build/
+    mkdir -p ouput/
     mkdir -p server_runtime/status/ server_runtime/submissions/ server_runtime/compiled/ server_runtime/outputs/ server_runtime/diff/
     echo -n "1 2 3 4 5 6 7 8 9 10 "> expected_output.txt
     cd ..

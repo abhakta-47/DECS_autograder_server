@@ -39,11 +39,15 @@ void log_message(LogLevel level, const char *format, ...) {
 
     time_t raw_time;
     struct tm *info;
-    char time_buffer[20];
+    struct timeval info_us;
+    // char time_buffer[20];
+    char fmt[64], time_buffer[64];
 
     time(&raw_time);
     info = localtime(&raw_time);
-    strftime(time_buffer, sizeof(time_buffer), "%Y-%m-%d %H:%M:%S", info);
+    gettimeofday(&info_us, NULL);
+    strftime(fmt, sizeof fmt, "%Y-%m-%d %H:%M:%S.%%06u %z", info);
+    snprintf(time_buffer, sizeof time_buffer, fmt, info_us.tv_usec);
 
     const char *severity_str;
     switch (level) {

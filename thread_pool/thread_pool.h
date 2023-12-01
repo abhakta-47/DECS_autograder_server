@@ -1,10 +1,11 @@
 #ifndef THREADPOOL_H
 #define THREADPOOL_H
 
+#include "logger/logger.h"
 #include <pthread.h>
 #include <stdbool.h>
 
-#define QUEUE_SIZE 100
+#define QUEUE_SIZE 1000
 
 // Define a structure for a task
 typedef struct {

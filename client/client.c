@@ -33,7 +33,19 @@ int check_func(int sockfd, char *req_id) {
     bzero(server_response, sizeof(server_response));
     int server_response_len =
         read(sockfd, server_response, sizeof(server_response));
-    printf("server_response: %s\n", server_response);
+
+    if (server_response_len < 0) {
+        if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
+            numOfTimeouts++;
+            printf("timeout detected");
+        } else {
+            numErrResponses++;
+            return -1;
+        }
+    }
+
+    printf("server : %s", server_response);
+
     if (strcmp(server_response, "SUCCESS"))
         return 0;
     if (strcmp(server_response, "COMPILE_ERROR"))
@@ -48,7 +60,7 @@ int check_func(int sockfd, char *req_id) {
     return 5;
 }
 
-int submit_func(int sockfd, char *NameOfFile) {
+int submit_func(int sockfd, char *NameOfFile, char *req_id) {
 
     sock_write_int(sockfd, ACTION_SUBMIT);
     send_file(sockfd, NameOfFile);
@@ -68,26 +80,16 @@ int submit_func(int sockfd, char *NameOfFile) {
         if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
             numOfTimeouts++;
             printf("timeout detected");
-            // fprintf(stderr, "Timeout occurred on read, req no: %d\n", i);
-            // timeout.tv_sec = time_out + i * 2; // Change the timeout by n
-            // seconds
-            // timeout.tv_usec = 0;
-            // continue;
         } else {
-            printf("ERROR reading from socket");
             numErrResponses++;
             return -1;
         }
-    } else {
-        // If the response contains "PASS", consider it a successful
-        // response
-        // printf("Success detected ");
-        successfulRes++;
     }
 
     write(server_to_client_response_file_fd, server_response,
           server_response_len);
-    printf("server_response: %s\n", server_response);
+    printf("%s", server_response);
+    strcpy(req_id, server_response);
 }
 
 int new_sockfd(char *serverAddressVar, int portno) {
@@ -96,7 +98,6 @@ int new_sockfd(char *serverAddressVar, int portno) {
     struct hostent *server;
     char buffer[1024];
 
-    // for (int i = 0; i < loop; i++) {
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
     if (sockfd < 0)
@@ -126,7 +127,7 @@ int new_sockfd(char *serverAddressVar, int portno) {
 }
 
 int main(int argc, char *argv[]) {
-    if (argc != 8) {
+    if (argc != 7) {
         fprintf(stderr,
                 "Usage: %s localhost <server_port> <sourceCodeFileTobeGraded> "
                 "<loop> <sleepTimeSeconds> <timeout-seconds>\n",
@@ -140,72 +141,64 @@ int main(int argc, char *argv[]) {
     int loop = atoi(argv[4]);
     int sleepTime = atoi(argv[5]);
     int timeout_seconds = atoi(argv[6]);
-    char *action = argv[7];
-
     timeout.tv_sec = timeout_seconds;
-    timeout.tv_usec = 0;
 
     // Send source file to server
     char *NameOfFile = sourceCodeFileVar;
-    // int SourceOfFile = open(NameOfFile, O_RDONLY);
-
-    // if (SourceOfFile < 0) {
-    //     error("Can't open the source file");
-    // }
-
-    // char SourceOfFileBuf[1024];
-
-    if (strcmp(action, "submit") == 0) {
-        int sockfd = new_sockfd(serverAddressVar, portno);
-        submit_func(sockfd, NameOfFile);
-        close(sockfd);
-
-    } else if (strcmp(action, "check") == 0) {
-        int status = 4;
-        while (status == 4) {
-            int sockfd = new_sockfd(serverAddressVar, portno);
-            status = check_func(sockfd, NameOfFile);
-            close(sockfd);
-        }
-    }
 
     int bytesRead;
     struct timeval start, end;
+    char req_id[37];
+    int sockfd;
 
-    gettimeofday(&start, NULL);
+    struct timeval loop_start, loop_end;
 
-    // reqid
-    // while(true){
+    double totalResponseTime = 0.0;
+    gettimeofday(&loop_start, NULL);
+    for (int i = 0; i < loop; i++) {
+        double responseTime = 0.0;
+        printf("loop: %d\n", i);
+        sockfd = new_sockfd(serverAddressVar, portno);
+        gettimeofday(&start, NULL);
+        submit_func(sockfd, NameOfFile, req_id);
+        gettimeofday(&end, NULL);
+        responseTime += (double)(end.tv_sec - start.tv_sec) +
+                        (double)(end.tv_usec - start.tv_usec) / 1000000.0;
+        printf("req_id: %s\n", req_id);
+        sleep(sleepTime);
 
-    //}
+        int status = 4, status_check_counter =0 ;
+        while (status == 4 && status_check_counter++ <= 10) {
+            int sockfd = new_sockfd(serverAddressVar, portno);
+            gettimeofday(&start, NULL);
+            status = check_func(sockfd, req_id);
+            gettimeofday(&end, NULL);
+            close(sockfd);
+            sleep(sleepTime);
+            responseTime += (double)(end.tv_sec - start.tv_sec) +
+                            (double)(end.tv_usec - start.tv_usec) / 1000000.0;
+        }
+        if (status != 5 && status_check_counter <= 10)
+            successfulRes++;
+        totalResponseTime += responseTime;
 
-    gettimeofday(&end, NULL);
-    double responseTime = (double)(end.tv_sec - start.tv_sec) +
-                          (double)(end.tv_usec - start.tv_usec) / 1000000.0;
-    totalResponseTime += responseTime;
-    // successfulRes++;
+        sleep(sleepTime);
+    }
+    gettimeofday(&loop_end, NULL);
 
-    // Handle sleep time
-    sleep(sleepTime);
-
-    // close(SourceOfFile);
-    // }
+    double loopTime =
+        (double)(loop_end.tv_sec - loop_start.tv_sec) +
+        (double)(loop_end.tv_usec - loop_start.tv_usec) / 1000000.0;
 
     // Calculate average response time
     double averageResponseTime = totalResponseTime / successfulRes;
     double throughputValue = successfulRes / (1.0 * totalResponseTime);
+    double throughputValue_loop = successfulRes / (1.0 * loopTime);
     // Output results
-    printf("Throughput is: %.7f\n", throughputValue);
-    printf("Average response time in Sec: %.7f\n", averageResponseTime);
-    printf("Successful Request Rate in res/Sec: %.7f\n",
-           (successfulRes / totalResponseTime));
-    printf("Total Response Time in Sec: %.7f\n", totalResponseTime);
-    printf("Timeout Rate in res/Sec: %.7f\n",
-           (numOfTimeouts / totalResponseTime));
-    printf("Error Rate in res/Sec: %.7f\n",
-           (numErrResponses / totalResponseTime));
-    printf("Request Sent Rate in res/microSec: %.7f\n",
-           (loop / totalResponseTime));
+    printf("Throughput: %.7f\n", throughputValue);
+    printf("Throughput looptime: %.7f\n", throughputValue_loop);
+    printf("Average Response Time: %.7f\n", averageResponseTime);
+    printf("Success Rate: %.7f\n", (double)successfulRes / (loop * 1.0) * 100);
 
     return 0;
 }

@@ -33,7 +33,7 @@ $(BUILD_DIR)/%.o: $(LOGGER_DIR)/%.c
 	gcc -c $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/server: $(OBJS) constants.h
-	gcc $(CFLAGS) $(OBJS) -o $@ -luuid
+	gcc $(CFLAGS) $(OBJS) -o $@ -luuid -lpthread
 
 $(BUILD_DIR)/client: $(BUILD_DIR)/common.o $(CLIENT_DIR)/client.c constants.h
 	gcc $(CFLAGS) $(BUILD_DIR)/common.o -o $@ $(CLIENT_DIR)/client.c

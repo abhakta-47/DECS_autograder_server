@@ -32,6 +32,8 @@ void *ThreadWorker(void *arg) {
 
 // Initialize the thread pool with a specified number of threads
 ThreadPool *ThreadPoolInit(int num_threads) {
+    log_message(LOG_INFO, "Initializing thread pool with %d threads",
+                num_threads);
     ThreadPool *pool = (ThreadPool *)malloc(sizeof(ThreadPool));
     if (pool == NULL) {
         fprintf(stderr, "Error: Memory allocation failed.\n");
@@ -52,6 +54,7 @@ ThreadPool *ThreadPoolInit(int num_threads) {
         pthread_create(&(pool->threads[i]), NULL, ThreadWorker, (void *)pool);
     }
 
+    log_message(LOG_INFO, "Thread pool initialized");
     return pool;
 }
 

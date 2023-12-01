@@ -28,14 +28,15 @@ int main(int argc, char *argv[]) {
     socklen_t clientAddressLength;
     struct sockaddr_in serverAddress, clientAddress;
 
-    struct ThreadPool *thread_pool;
-    thread_pool = ThreadPoolInit(MAX_THREADS);
-    global_thread_pool = thread_pool;
-
-    if (argc < 2) {
-        fprintf(stderr, "ERROR, no port provided\n");
+    if (argc < 3) {
+        fprintf(stderr, "Usage, ./server <port> <threadpool size>\n");
         exit(1);
     }
+
+    int threadpool_size = atoi(argv[2]);
+    struct ThreadPool *thread_pool;
+    thread_pool = ThreadPoolInit(threadpool_size);
+    global_thread_pool = thread_pool;
 
     listenSocket = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -61,7 +62,7 @@ int main(int argc, char *argv[]) {
         int *newSocket = (int *)malloc(sizeof(int));
         *newSocket = accept(listenSocket, (struct sockaddr *)&clientAddress,
                             &clientAddressLength);
-
+        log_message(LOG_INFO, "server: Connection accepted");
         if (*newSocket < 0)
             error("ERROR on accept");
 
@@ -69,6 +70,8 @@ int main(int argc, char *argv[]) {
     }
 
     close(listenSocket);
+    ThreadPoolWait(thread_pool);
+    ThreadPoolCleanup(thread_pool);
 
     return 0;
 }
