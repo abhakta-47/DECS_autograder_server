@@ -1,0 +1,19 @@
+loop: 0
+556a8a2d-2189-4617-bf98-dece94f60bf5req_id: 556a8a2d-2189-4617-bf98-dece94f60bf5
+server : SUCCESS
+loop: 1
+7d326d30-9e96-4568-a76f-962bd0bbddd4req_id: 7d326d30-9e96-4568-a76f-962bd0bbddd4
+server : SUCCESS
+loop: 2
+50efdb29-3ff4-4e68-bf8f-2e98ab6ebbbbreq_id: 50efdb29-3ff4-4e68-bf8f-2e98ab6ebbbb
+server : SUCCESS
+loop: 3
+360dc081-b7f9-4af5-a4ff-27acaa1262f4req_id: 360dc081-b7f9-4af5-a4ff-27acaa1262f4
+server : SUCCESS
+loop: 4
+332f405e-d3ae-4bb5-a26d-437ef6fc62f0req_id: 332f405e-d3ae-4bb5-a26d-437ef6fc62f0
+server : SUCCESS
+Throughput: 5.3070331
+Throughput looptime: 0.1613177
+Average Response Time: 0.1884292
+Success Rate: 100.0000000

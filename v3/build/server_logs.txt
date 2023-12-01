@@ -1,0 +1,254 @@
+[2023-11-28 16:14:33] [INFO] [Thread:139709324957312] Server started 10
+
+[2023-11-28 16:14:54] [INFO] [Thread:139747860547200] Server started 10
+
+[2023-11-28 16:15:04] [INFO] [Thread:139747860547200] New client connected
+
+[2023-11-28 16:15:04] [INFO] [Thread:139747860547200] client enqueued & signalling threads
+
+[2023-11-28 16:15:04] [INFO] [Thread:139747858556608] client dequeued
+
+[2023-11-28 16:15:05] [INFO] [Thread:139747858556608] Wrong answer
+
+[2023-11-28 16:15:06] [INFO] [Thread:139747860547200] New client connected
+
+[2023-11-28 16:15:06] [INFO] [Thread:139747860547200] client enqueued & signalling threads
+
+[2023-11-28 16:15:06] [INFO] [Thread:139747850163904] client dequeued
+
+[2023-11-28 16:15:07] [INFO] [Thread:139747850163904] Wrong answer
+
+[2023-11-28 16:15:08] [INFO] [Thread:139747860547200] New client connected
+
+[2023-11-28 16:15:08] [INFO] [Thread:139747860547200] client enqueued & signalling threads
+
+[2023-11-28 16:15:08] [INFO] [Thread:139747841771200] client dequeued
+
+[2023-11-28 16:15:09] [INFO] [Thread:139747841771200] Wrong answer
+
+[2023-11-28 16:15:10] [INFO] [Thread:139747860547200] New client connected
+
+[2023-11-28 16:15:10] [INFO] [Thread:139747860547200] client enqueued & signalling threads
+
+[2023-11-28 16:15:10] [INFO] [Thread:139747833378496] client dequeued
+
+[2023-11-28 16:15:11] [INFO] [Thread:139747833378496] Wrong answer
+
+[2023-11-28 16:15:12] [INFO] [Thread:139747860547200] New client connected
+
+[2023-11-28 16:15:12] [INFO] [Thread:139747860547200] client enqueued & signalling threads
+
+[2023-11-28 16:15:12] [INFO] [Thread:139747816593088] client dequeued
+
+[2023-11-28 16:15:14] [INFO] [Thread:139747816593088] Wrong answer
+
+[2023-11-28 16:15:51] [INFO] [Thread:139747860547200] New client connected
+
+[2023-11-28 16:15:51] [INFO] [Thread:139747860547200] client enqueued & signalling threads
+
+[2023-11-28 16:15:51] [INFO] [Thread:139747824985792] client dequeued
+
+[2023-11-28 16:15:52] [INFO] [Thread:139747824985792] Accepted
+
+[2023-11-28 16:15:53] [INFO] [Thread:139747860547200] New client connected
+
+[2023-11-28 16:15:53] [INFO] [Thread:139747860547200] client enqueued & signalling threads
+
+[2023-11-28 16:15:53] [INFO] [Thread:139747808200384] client dequeued
+
+[2023-11-28 16:15:54] [INFO] [Thread:139747808200384] Accepted
+
+[2023-11-28 16:15:55] [INFO] [Thread:139747860547200] New client connected
+
+[2023-11-28 16:15:55] [INFO] [Thread:139747860547200] client enqueued & signalling threads
+
+[2023-11-28 16:15:55] [INFO] [Thread:139747799807680] client dequeued
+
+[2023-11-28 16:15:56] [INFO] [Thread:139747799807680] Accepted
+
+[2023-11-28 16:15:57] [INFO] [Thread:139747860547200] New client connected
+
+[2023-11-28 16:15:57] [INFO] [Thread:139747860547200] client enqueued & signalling threads
+
+[2023-11-28 16:15:57] [INFO] [Thread:139747791414976] client dequeued
+
+[2023-11-28 16:15:59] [INFO] [Thread:139747791414976] Accepted
+
+[2023-11-28 16:16:00] [INFO] [Thread:139747860547200] New client connected
+
+[2023-11-28 16:16:00] [INFO] [Thread:139747860547200] client enqueued & signalling threads
+
+[2023-11-28 16:16:00] [INFO] [Thread:139747783022272] client dequeued
+
+[2023-11-28 16:16:01] [INFO] [Thread:139747783022272] Accepted
+
+[2023-11-28 16:17:52ƒ] [INFO] [Thread:140200765580928] Server started 10
+
+[2023-11-28 16:17:54ƒ] [INFO] [Thread:140200765580928] New client connected
+
+[2023-11-28 16:17:54ƒ] [INFO] [Thread:140200765580928] client enqueued & signalling threads
+
+[2023-11-28 16:17:54] [INFO] [Thread:140200763590336] client dequeued
+
+[2023-11-28 16:17:55] [INFO] [Thread:140200763590336] Accepted
+
+[2023-11-28 16:17:56ƒ] [INFO] [Thread:140200765580928] New client connected
+
+[2023-11-28 16:17:56ƒ] [INFO] [Thread:140200765580928] client enqueued & signalling threads
+
+[2023-11-28 16:17:56] [INFO] [Thread:140200755197632] client dequeued
+
+[2023-11-28 16:17:57] [INFO] [Thread:140200755197632] Accepted
+
+[2023-11-28 16:17:58ƒ] [INFO] [Thread:140200765580928] New client connected
+
+[2023-11-28 16:17:58ƒ] [INFO] [Thread:140200765580928] client enqueued & signalling threads
+
+[2023-11-28 16:17:58] [INFO] [Thread:140200746804928] client dequeued
+
+[2023-11-28 16:17:59] [INFO] [Thread:140200746804928] Accepted
+
+[2023-11-28 16:18:00ƒ] [INFO] [Thread:140200765580928] New client connected
+
+[2023-11-28 16:18:00ƒ] [INFO] [Thread:140200765580928] client enqueued & signalling threads
+
+[2023-11-28 16:18:00] [INFO] [Thread:140200738412224] client dequeued
+
+[2023-11-28 16:18:01] [INFO] [Thread:140200738412224] Accepted
+
+[2023-11-28 16:18:02ƒ] [INFO] [Thread:140200765580928] New client connected
+
+[2023-11-28 16:18:02ƒ] [INFO] [Thread:140200765580928] client enqueued & signalling threads
+
+[2023-11-28 16:18:02] [INFO] [Thread:140200730019520] client dequeued
+
+[2023-11-28 16:18:03] [INFO] [Thread:140200730019520] Accepted
+
+[2023-11-28 16:19:38éû] [INFO] [Thread:140719936177792] Server started 10
+
+[2023-11-28 16:19:40,æU] [INFO] [Thread:140719936177792] New client connected
+[2023-11-28 16:19:40,æU] [INFO] [Thread:140719936177792] client enqueued & signalling threads
+[2023-11-28 16:19:40] [INFO] [Thread:140719934187200] client dequeued
+[2023-11-28 16:19:41] [INFO] [Thread:140719934187200] Accepted
+[2023-11-28 16:19:42,æU] [INFO] [Thread:140719936177792] New client connected
+[2023-11-28 16:19:42,æU] [INFO] [Thread:140719936177792] client enqueued & signalling threads
+[2023-11-28 16:19:42] [INFO] [Thread:140719925794496] client dequeued
+[2023-11-28 16:19:43] [INFO] [Thread:140719925794496] Accepted
+[2023-11-28 16:19:44,æU] [INFO] [Thread:140719936177792] New client connected
+[2023-11-28 16:19:44,æU] [INFO] [Thread:140719936177792] client enqueued & signalling threads
+[2023-11-28 16:19:44] [INFO] [Thread:140719917401792] client dequeued
+[2023-11-28 16:19:45] [INFO] [Thread:140719917401792] Accepted
+[2023-11-28 16:19:46,æU] [INFO] [Thread:140719936177792] New client connected
+[2023-11-28 16:19:46,æU] [INFO] [Thread:140719936177792] client enqueued & signalling threads
+[2023-11-28 16:19:46] [INFO] [Thread:140719909009088] client dequeued
+[2023-11-28 16:19:47] [INFO] [Thread:140719909009088] Accepted
+[2023-11-28 16:19:48,æU] [INFO] [Thread:140719936177792] New client connected
+[2023-11-28 16:19:48,æU] [INFO] [Thread:140719936177792] client enqueued & signalling threads
+[2023-11-28 16:19:48] [INFO] [Thread:140719900616384] client dequeued
+[2023-11-28 16:19:49] [INFO] [Thread:140719900616384] Accepted
+[2023-11-28 16:21:55Ú] [INFO] [Thread:139641648182912] Server started 10
+
+[2023-11-28 16:21:57G÷U] [INFO] [Thread:139641648182912] New client connected
+[2023-11-28 16:21:57G÷U] [INFO] [Thread:139641648182912] client enqueued & signalling threads
+[2023-11-28 16:21:57] [INFO] [Thread:139641646192320] client dequeued
+[2023-11-28 16:21:58] [INFO] [Thread:139641646192320] Accepted
+[2023-11-28 16:21:59G÷U] [INFO] [Thread:139641648182912] New client connected
+[2023-11-28 16:21:59G÷U] [INFO] [Thread:139641648182912] client enqueued & signalling threads
+[2023-11-28 16:21:59] [INFO] [Thread:139641637799616] client dequeued
+[2023-11-28 16:22:00] [INFO] [Thread:139641637799616] Accepted
+[2023-11-28 16:22:01G÷U] [INFO] [Thread:139641648182912] New client connected
+[2023-11-28 16:22:01G÷U] [INFO] [Thread:139641648182912] client enqueued & signalling threads
+[2023-11-28 16:22:01] [INFO] [Thread:139641629406912] client dequeued
+[2023-11-28 16:22:02] [INFO] [Thread:139641629406912] Accepted
+[2023-11-28 16:22:03G÷U] [INFO] [Thread:139641648182912] New client connected
+[2023-11-28 16:22:03G÷U] [INFO] [Thread:139641648182912] client enqueued & signalling threads
+[2023-11-28 16:22:03] [INFO] [Thread:139641621014208] client dequeued
+[2023-11-28 16:22:04] [INFO] [Thread:139641621014208] Accepted
+[2023-11-28 16:22:05G÷U] [INFO] [Thread:139641648182912] New client connected
+[2023-11-28 16:22:05G÷U] [INFO] [Thread:139641648182912] client enqueued & signalling threads
+[2023-11-28 16:22:05] [INFO] [Thread:139641612621504] client dequeued
+[2023-11-28 16:22:06] [INFO] [Thread:139641612621504] Accepted
+[2023-11-28 16:27:41.148851 +0530] [INFO] [Thread:139915766040192] Server started 10
+
+[2023-11-28 16:27:44.219020 +0530] [INFO] [Thread:139915766040192] New client connected
+[2023-11-28 16:27:44.219078 +0530] [INFO] [Thread:139915766040192] client enqueued & signalling threads
+[2023-11-28 16:27:44.219261 +0530] [INFO] [Thread:139915764049600] client dequeued
+[2023-11-28 16:27:45.338688 +0530] [INFO] [Thread:139915764049600] Accepted
+[2023-11-28 16:27:46.339496 +0530] [INFO] [Thread:139915766040192] New client connected
+[2023-11-28 16:27:46.339565 +0530] [INFO] [Thread:139915766040192] client enqueued & signalling threads
+[2023-11-28 16:27:46.339795 +0530] [INFO] [Thread:139915755656896] client dequeued
+[2023-11-28 16:27:47.460610 +0530] [INFO] [Thread:139915755656896] Accepted
+[2023-11-28 16:27:48.461725 +0530] [INFO] [Thread:139915766040192] New client connected
+[2023-11-28 16:27:48.461797 +0530] [INFO] [Thread:139915766040192] client enqueued & signalling threads
+[2023-11-28 16:27:48.461982 +0530] [INFO] [Thread:139915738871488] client dequeued
+[2023-11-28 16:27:49.585245 +0530] [INFO] [Thread:139915738871488] Accepted
+[2023-11-28 16:27:50.586213 +0530] [INFO] [Thread:139915766040192] New client connected
+[2023-11-28 16:27:50.586289 +0530] [INFO] [Thread:139915766040192] client enqueued & signalling threads
+[2023-11-28 16:27:50.586511 +0530] [INFO] [Thread:139915747264192] client dequeued
+[2023-11-28 16:27:51.701805 +0530] [INFO] [Thread:139915747264192] Accepted
+[2023-11-28 16:27:52.702930 +0530] [INFO] [Thread:139915766040192] New client connected
+[2023-11-28 16:27:52.702993 +0530] [INFO] [Thread:139915766040192] client enqueued & signalling threads
+[2023-11-28 16:27:52.703192 +0530] [INFO] [Thread:139915730478784] client dequeued
+[2023-11-28 16:27:53.818568 +0530] [INFO] [Thread:139915730478784] Accepted
+[2023-11-28 16:33:30.856934 +0530] [INFO] [Thread:140146906510976] Server started 10
+
+[2023-11-28 16:33:32.968508 +0530] [INFO] [Thread:140146906510976] New client connected
+[2023-11-28 16:33:32.968563 +0530] [INFO] [Thread:140146906510976] client enqueued & signalling threads
+[2023-11-28 16:33:32.968756 +0530] [INFO] [Thread:140146904520384] client dequeued
+[2023-11-28 16:33:32.968930 +0530] [INFO] [Thread:140146904520384] worker: compiler started
+[2023-11-28 16:33:33.065206 +0530] [INFO] [Thread:140146904520384] worker: compiler ended
+[2023-11-28 16:33:34.065356 +0530] [INFO] [Thread:140146904520384] worker: runner started
+[2023-11-28 16:33:34.074615 +0530] [INFO] [Thread:140146904520384] worker: runner ended
+[2023-11-28 16:33:34.074662 +0530] [INFO] [Thread:140146904520384] worker: diff started
+[2023-11-28 16:33:34.083887 +0530] [INFO] [Thread:140146904520384] worker: diff ended
+[2023-11-28 16:33:34.083928 +0530] [INFO] [Thread:140146904520384] worker: Accepted
+[2023-11-28 16:33:34.083944 +0530] [INFO] [Thread:140146904520384] worker: network: sending result
+[2023-11-28 16:33:34.084042 +0530] [INFO] [Thread:140146904520384] worker: network: result sent
+[2023-11-28 16:33:35.084662 +0530] [INFO] [Thread:140146906510976] New client connected
+[2023-11-28 16:33:35.084709 +0530] [INFO] [Thread:140146906510976] client enqueued & signalling threads
+[2023-11-28 16:33:35.084833 +0530] [INFO] [Thread:140146896127680] client dequeued
+[2023-11-28 16:33:35.085017 +0530] [INFO] [Thread:140146896127680] worker: compiler started
+[2023-11-28 16:33:35.193350 +0530] [INFO] [Thread:140146896127680] worker: compiler ended
+[2023-11-28 16:33:36.193796 +0530] [INFO] [Thread:140146896127680] worker: runner started
+[2023-11-28 16:33:36.210264 +0530] [INFO] [Thread:140146896127680] worker: runner ended
+[2023-11-28 16:33:36.210326 +0530] [INFO] [Thread:140146896127680] worker: diff started
+[2023-11-28 16:33:36.221744 +0530] [INFO] [Thread:140146896127680] worker: diff ended
+[2023-11-28 16:33:36.221799 +0530] [INFO] [Thread:140146896127680] worker: Accepted
+[2023-11-28 16:33:36.221827 +0530] [INFO] [Thread:140146896127680] worker: network: sending result
+[2023-11-28 16:33:36.221960 +0530] [INFO] [Thread:140146896127680] worker: network: result sent
+[2023-11-28 16:33:37.222816 +0530] [INFO] [Thread:140146906510976] New client connected
+[2023-11-28 16:33:37.222880 +0530] [INFO] [Thread:140146906510976] client enqueued & signalling threads
+[2023-11-28 16:33:37.223066 +0530] [INFO] [Thread:140146887734976] client dequeued
+[2023-11-28 16:33:37.223237 +0530] [INFO] [Thread:140146887734976] worker: compiler started
+[2023-11-28 16:33:37.313641 +0530] [INFO] [Thread:140146887734976] worker: compiler ended
+[2023-11-28 16:33:38.314191 +0530] [INFO] [Thread:140146887734976] worker: runner started
+[2023-11-28 16:33:38.325942 +0530] [INFO] [Thread:140146887734976] worker: runner ended
+[2023-11-28 16:33:38.325998 +0530] [INFO] [Thread:140146887734976] worker: diff started
+[2023-11-28 16:33:38.337717 +0530] [INFO] [Thread:140146887734976] worker: diff ended
+[2023-11-28 16:33:38.337766 +0530] [INFO] [Thread:140146887734976] worker: Accepted
+[2023-11-28 16:33:38.337781 +0530] [INFO] [Thread:140146887734976] worker: network: sending result
+[2023-11-28 16:33:38.337886 +0530] [INFO] [Thread:140146887734976] worker: network: result sent
+[2023-11-28 16:33:39.339038 +0530] [INFO] [Thread:140146906510976] New client connected
+[2023-11-28 16:33:39.339098 +0530] [INFO] [Thread:140146906510976] client enqueued & signalling threads
+[2023-11-28 16:33:39.339302 +0530] [INFO] [Thread:140146879342272] client dequeued
+[2023-11-28 16:33:39.339506 +0530] [INFO] [Thread:140146879342272] worker: compiler started
+[2023-11-28 16:33:39.435441 +0530] [INFO] [Thread:140146879342272] worker: compiler ended
+[2023-11-28 16:33:40.435716 +0530] [INFO] [Thread:140146879342272] worker: runner started
+[2023-11-28 16:33:40.446147 +0530] [INFO] [Thread:140146879342272] worker: runner ended
+[2023-11-28 16:33:40.446195 +0530] [INFO] [Thread:140146879342272] worker: diff started
+[2023-11-28 16:33:40.456420 +0530] [INFO] [Thread:140146879342272] worker: diff ended
+[2023-11-28 16:33:40.456464 +0530] [INFO] [Thread:140146879342272] worker: Accepted
+[2023-11-28 16:33:40.456477 +0530] [INFO] [Thread:140146879342272] worker: network: sending result
+[2023-11-28 16:33:40.456567 +0530] [INFO] [Thread:140146879342272] worker: network: result sent
+[2023-11-28 16:33:41.457100 +0530] [INFO] [Thread:140146906510976] New client connected
+[2023-11-28 16:33:41.457161 +0530] [INFO] [Thread:140146906510976] client enqueued & signalling threads
+[2023-11-28 16:33:41.457271 +0530] [INFO] [Thread:140146870949568] client dequeued
+[2023-11-28 16:33:41.457414 +0530] [INFO] [Thread:140146870949568] worker: compiler started
+[2023-11-28 16:33:41.547286 +0530] [INFO] [Thread:140146870949568] worker: compiler ended
+[2023-11-28 16:33:42.547468 +0530] [INFO] [Thread:140146870949568] worker: runner started
+[2023-11-28 16:33:42.555193 +0530] [INFO] [Thread:140146870949568] worker: runner ended
+[2023-11-28 16:33:42.555230 +0530] [INFO] [Thread:140146870949568] worker: diff started
+[2023-11-28 16:33:42.563244 +0530] [INFO] [Thread:140146870949568] worker: diff ended
+[2023-11-28 16:33:42.563286 +0530] [INFO] [Thread:140146870949568] worker: Accepted
+[2023-11-28 16:33:42.563305 +0530] [INFO] [Thread:140146870949568] worker: network: sending result
+[2023-11-28 16:33:42.563406 +0530] [INFO] [Thread:140146870949568] worker: network: result sent

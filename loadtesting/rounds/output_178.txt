@@ -1,0 +1,4 @@
+Throughput: 6.0576543
+Throughput looptime: 0.5626250
+Average Response Time: 0.1650804
+Success Rate: 100.0000000
